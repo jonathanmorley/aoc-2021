@@ -1,6 +1,7 @@
 use std::iter;
 use std::num::ParseIntError;
 
+use aoc_runner_derive::{aoc, aoc_generator};
 use itertools::izip;
 
 #[aoc_generator(day1)]
