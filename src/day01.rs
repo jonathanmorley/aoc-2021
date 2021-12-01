@@ -1,6 +1,7 @@
 use std::iter;
 use std::num::ParseIntError;
 
+use aoc_runner_derive::{aoc, aoc_generator};
 use itertools::izip;
 
 #[aoc_generator(day1)]
@@ -53,7 +54,7 @@ pub fn part2(input: &[u32]) -> usize {
 mod tests {
     use super::*;
 
-    const sample: &str = "199
+    const SAMPLE: &str = "199
 200
 208
 210
@@ -66,11 +67,11 @@ mod tests {
 
     #[test]
     fn sample1() {
-        assert_eq!(part1(&generator(sample).unwrap()), 7);
+        assert_eq!(part1(&generator(SAMPLE).unwrap()), 7);
     }
 
     #[test]
     fn sample2() {
-        assert_eq!(part2(&generator(sample).unwrap()), 5);
+        assert_eq!(part2(&generator(SAMPLE).unwrap()), 5);
     }
 }
