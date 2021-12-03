@@ -1,59 +1,6 @@
 use anyhow::Result;
 use aoc_runner_derive::aoc;
 
-// shamelessly copied from https://stackoverflow.com/a/64499219
-fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
-    assert!(!v.is_empty());
-    let len = v[0].len();
-    let mut iters: Vec<_> = v.into_iter().map(|n| n.into_iter()).collect();
-    (0..len)
-        .map(|_| {
-            iters
-                .iter_mut()
-                .map(|n| n.next().unwrap())
-                .collect::<Vec<T>>()
-        })
-        .collect()
-}
-
-fn gamma_bit(bits: &[char]) -> char {
-    let (zeroes, ones): (Vec<&char>, Vec<&char>) = bits.iter().partition(|b| **b == '0');
-    if zeroes.len() > ones.len() { '0' } else { '1' }
-}
-
-fn invert(bits: &str) -> String {
-    bits.chars().map(|b| if b == '0' { '1' } else { '0' }).collect()
-}
-
-fn gamma(readings: Vec<Vec<char>>) -> Result<u32> {
-    let gamma_str: String = transpose(readings)
-        .into_iter()
-        .map(|column| gamma_bit(&column))
-        .collect();
-
-    u32::from_str_radix(&gamma_str, 2).map_err(Into::into)
-}
-
-fn epsilon(readings: Vec<Vec<char>>) -> Result<u32> {
-    let gamma_str: String = transpose(readings)
-        .into_iter()
-        .map(|column| gamma_bit(&column))
-        .collect();
-
-    let epsilon_str = invert(&gamma_str);
-    u32::from_str_radix(&epsilon_str, 2).map_err(Into::into)
-}
-
-#[aoc(day3, part1)]
-fn part1(input: &str) -> Result<u64> {
-    let input_chars: Vec<Vec<char>> = input.lines().map(str::chars).map(Iterator::collect).collect();    
-    
-    let gamma = gamma(input_chars.clone())?;
-    let epsilon = epsilon(input_chars)?;
-    
-    Ok(gamma as u64 * epsilon as u64)
-}
-
 fn reading_column(readings: &[String], index: usize) -> Vec<char> {
     readings.iter().map(|reading| reading.chars().nth(index).unwrap()).collect()
 }
@@ -71,6 +18,36 @@ fn most_common_bit(readings: &[String], index: usize) -> char {
 fn least_common_bit(readings: &[String], index: usize) -> char {
     let (zeroes, ones) = bit_counts(readings, index);
     if zeroes <= ones { '0' } else { '1' }
+}
+
+fn gamma(readings: &[String]) -> Result<u32> {
+    let mut gamma = String::new();
+
+    for i in 0..readings[0].len() {
+        gamma.push(most_common_bit(readings, i));
+    }
+
+    u32::from_str_radix(&gamma, 2).map_err(Into::into)
+}
+
+fn epsilon(readings: &[String]) -> Result<u32> {
+    let mut epsilon = String::new();
+
+    for i in 0..readings[0].len() {
+        epsilon.push(least_common_bit(readings, i));
+    }
+
+    u32::from_str_radix(&epsilon, 2).map_err(Into::into)
+}
+
+#[aoc(day3, part1)]
+fn part1(input: &str) -> Result<u64> {
+    let input_str: Vec<String> = input.lines().map(ToOwned::to_owned).collect();
+    
+    let gamma = gamma(&input_str)?;
+    let epsilon = epsilon(&input_str)?;
+    
+    Ok(gamma as u64 * epsilon as u64)
 }
 
 fn filter_readings(readings: Vec<String>, index: usize, filter_bit: char) -> Vec<String> {
@@ -117,6 +94,7 @@ fn co2_scrubber(readings: Vec<String>) -> Result<u32> {
 #[aoc(day3, part2)]
 fn part2(input: &str) -> Result<u64> {
     let input_chars: Vec<String> = input.lines().map(ToOwned::to_owned).collect();
+    
     let oxygen_generator = oxygen_generator(input_chars.clone())?;
     let co2_scrubber = co2_scrubber(input_chars)?;
 
