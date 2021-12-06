@@ -1,38 +1,26 @@
 use anyhow::Result;
 use aoc_runner_derive::{aoc, aoc_generator};
+use itertools::Itertools;
 
 struct LanternSchool([usize; 9]);
 
 impl From<Vec<u32>> for LanternSchool {
-  fn from(vec: Vec<u32>) -> Self {
-    LanternSchool([
-      vec.iter().filter(|x| *x == &0).count(),
-      vec.iter().filter(|x| *x == &1).count(),
-      vec.iter().filter(|x| *x == &2).count(),
-      vec.iter().filter(|x| *x == &3).count(),
-      vec.iter().filter(|x| *x == &4).count(),
-      vec.iter().filter(|x| *x == &5).count(),
-      vec.iter().filter(|x| *x == &6).count(),
-      vec.iter().filter(|x| *x == &7).count(),
-      vec.iter().filter(|x| *x == &8).count(),
-    ])
-  }
+    fn from(vec: Vec<u32>) -> Self {
+        let mut school = LanternSchool([0; 9]);
+
+        for (key, value) in vec.into_iter().counts() {
+            school.0[key as usize] = value;
+        }
+
+        school
+    }
 }
 
 impl LanternSchool {
-  fn day(self) -> Self {
-    LanternSchool([
-      self.0[1],
-      self.0[2],
-      self.0[3],
-      self.0[4],
-      self.0[5],
-      self.0[6],
-      self.0[7] + self.0[0],
-      self.0[8],
-      self.0[0]
-    ])
-  }
+    fn day(&mut self) {
+        self.0.rotate_left(1);
+        self.0[6] += self.0[8];
+    }
 }
 
 #[aoc_generator(day6)]
@@ -45,24 +33,23 @@ fn generator(input: &str) -> Result<Vec<u32>> {
 }
 
 fn lanternfish(initial: Vec<u32>, day: u32) -> usize {
-  let mut school: LanternSchool = initial.into();
+    let mut school: LanternSchool = initial.into();
 
-  for _ in 0..day {
-    school = school.day();
-  }
+    for _ in 0..day {
+        school.day();
+    }
 
-  school.0.into_iter().sum()
+    school.0.into_iter().sum()
 }
-
 
 #[aoc(day6, part1)]
 fn part1(input: &[u32]) -> usize {
-  lanternfish(input.to_owned(), 80)
+    lanternfish(input.to_owned(), 80)
 }
 
 #[aoc(day6, part2)]
 fn part2(input: &[u32]) -> usize {
-  lanternfish(input.to_owned(), 256)
+    lanternfish(input.to_owned(), 256)
 }
 
 #[cfg(test)]
