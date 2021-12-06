@@ -9,7 +9,7 @@ use strum::EnumString;
 enum Direction {
     Forward,
     Down,
-    Up
+    Up,
 }
 
 #[derive(Debug, PartialEq)]
@@ -20,7 +20,7 @@ impl FromStr for Vector {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut split = s.split_whitespace();
-        
+
         if let (Some(direction), Some(magnitude)) = (split.next(), split.next()) {
             Ok(Vector(direction.parse()?, magnitude.parse()?))
         } else {
@@ -36,21 +36,21 @@ fn generator(input: &str) -> Result<Vec<Vector>> {
 
 struct Location {
     horizontal: i64,
-    depth: i64
+    depth: i64,
 }
 
 #[aoc(day2, part1)]
 fn part1(input: &[Vector]) -> i64 {
     let mut location = Location {
         horizontal: 0,
-        depth: 0
+        depth: 0,
     };
 
     for Vector(direction, magnitude) in input {
         match direction {
             Direction::Forward => location.horizontal += *magnitude as i64,
             Direction::Up => location.depth -= *magnitude as i64,
-            Direction::Down => location.depth += *magnitude as i64
+            Direction::Down => location.depth += *magnitude as i64,
         }
     }
 
@@ -60,7 +60,7 @@ fn part1(input: &[Vector]) -> i64 {
 struct OrientedLocation {
     horizontal: i64,
     depth: i64,
-    aim: i64
+    aim: i64,
 }
 
 #[aoc(day2, part2)]
@@ -68,7 +68,7 @@ fn part2(input: &[Vector]) -> i64 {
     let mut location = OrientedLocation {
         horizontal: 0,
         depth: 0,
-        aim: 0
+        aim: 0,
     };
 
     for Vector(direction, magnitude) in input {
@@ -89,8 +89,7 @@ fn part2(input: &[Vector]) -> i64 {
 mod tests {
     use super::*;
 
-    const SAMPLE: &str = 
-"forward 5
+    const SAMPLE: &str = "forward 5
 down 5
 forward 8
 up 3

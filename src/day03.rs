@@ -2,22 +2,35 @@ use anyhow::Result;
 use aoc_runner_derive::aoc;
 
 fn reading_column(readings: &[String], index: usize) -> Vec<char> {
-    readings.iter().map(|reading| reading.chars().nth(index).unwrap()).collect()
+    readings
+        .iter()
+        .map(|reading| reading.chars().nth(index).unwrap())
+        .collect()
 }
 
 fn bit_counts(readings: &[String], index: usize) -> (usize, usize) {
-    let (zeroes, ones): (Vec<char>, Vec<char>) = reading_column(readings, index).iter().partition(|bit| **bit == '0');
+    let (zeroes, ones): (Vec<char>, Vec<char>) = reading_column(readings, index)
+        .iter()
+        .partition(|bit| **bit == '0');
     (zeroes.len(), ones.len())
 }
 
 fn most_common_bit(readings: &[String], index: usize) -> char {
     let (zeroes, ones) = bit_counts(readings, index);
-    if zeroes > ones { '0' } else { '1' }
+    if zeroes > ones {
+        '0'
+    } else {
+        '1'
+    }
 }
 
 fn least_common_bit(readings: &[String], index: usize) -> char {
     let (zeroes, ones) = bit_counts(readings, index);
-    if zeroes <= ones { '0' } else { '1' }
+    if zeroes <= ones {
+        '0'
+    } else {
+        '1'
+    }
 }
 
 fn gamma(readings: &[String]) -> Result<u32> {
@@ -43,19 +56,17 @@ fn epsilon(readings: &[String]) -> Result<u32> {
 #[aoc(day3, part1)]
 fn part1(input: &str) -> Result<u64> {
     let input_str: Vec<String> = input.lines().map(ToOwned::to_owned).collect();
-    
+
     let gamma = gamma(&input_str)?;
     let epsilon = epsilon(&input_str)?;
-    
+
     Ok(gamma as u64 * epsilon as u64)
 }
 
 fn filter_readings(readings: Vec<String>, index: usize, filter_bit: char) -> Vec<String> {
     readings
         .into_iter()
-        .filter(|reading| {
-            reading.chars().nth(index).unwrap() == filter_bit
-        })
+        .filter(|reading| reading.chars().nth(index).unwrap() == filter_bit)
         .collect()
 }
 
@@ -64,9 +75,9 @@ fn oxygen_generator(readings: Vec<String>) -> Result<u32> {
 
     for i in 0.. {
         let mcb = most_common_bit(&candidates, i);
-        
+
         candidates = filter_readings(candidates, i, mcb);
-        
+
         if candidates.len() == 1 {
             break;
         }
@@ -80,9 +91,9 @@ fn co2_scrubber(readings: Vec<String>) -> Result<u32> {
 
     for i in 0.. {
         let lcb = least_common_bit(&candidates, i);
-        
+
         candidates = filter_readings(candidates, i, lcb);
-        
+
         if candidates.len() == 1 {
             break;
         }
@@ -94,7 +105,7 @@ fn co2_scrubber(readings: Vec<String>) -> Result<u32> {
 #[aoc(day3, part2)]
 fn part2(input: &str) -> Result<u64> {
     let input_chars: Vec<String> = input.lines().map(ToOwned::to_owned).collect();
-    
+
     let oxygen_generator = oxygen_generator(input_chars.clone())?;
     let co2_scrubber = co2_scrubber(input_chars)?;
 
@@ -105,8 +116,7 @@ fn part2(input: &str) -> Result<u64> {
 mod tests {
     use super::*;
 
-    const SAMPLE: &str = 
-"00100
+    const SAMPLE: &str = "00100
 11110
 10110
 10111

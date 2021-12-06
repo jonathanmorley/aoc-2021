@@ -26,20 +26,21 @@ pub fn part1(input: &[u32]) -> usize {
 #[aoc(day1, part2)]
 pub fn part2(input: &[u32]) -> usize {
     let offset_1 = iter::once(None).chain(input.clone().into_iter().map(Some));
-    let offset_2 = iter::once(None).chain(iter::once(None)).chain(input.clone().into_iter().map(Some));
+    let offset_2 = iter::once(None)
+        .chain(iter::once(None))
+        .chain(input.clone().into_iter().map(Some));
 
-    let windows = izip!(offset_2, offset_1, input)
-        .filter_map(|(a, b, c)| {
-            if let Some(a) = a {
-                if let Some(b) = b {
-                    Some(a + b + c)
-                } else {
-                    None
-                }
+    let windows = izip!(offset_2, offset_1, input).filter_map(|(a, b, c)| {
+        if let Some(a) = a {
+            if let Some(b) = b {
+                Some(a + b + c)
             } else {
                 None
             }
-        });
+        } else {
+            None
+        }
+    });
 
     let offset_windows = iter::once(None).chain(windows.clone().map(Some));
     let cmp = offset_windows.zip(windows);
