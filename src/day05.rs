@@ -53,7 +53,7 @@ impl VentLine {
     fn delta(&self) -> (i64, i64) {
         (
             self.1.x as i64 - self.0.x as i64,
-            self.1.y as i64 - self.0.y as i64
+            self.1.y as i64 - self.0.y as i64,
         )
     }
 
@@ -64,18 +64,18 @@ impl VentLine {
             match delta_x.cmp(&0) {
                 Ordering::Greater => (1, 0),
                 Ordering::Equal => (0, 0),
-                Ordering::Less => (-1, 0)
+                Ordering::Less => (-1, 0),
             }
         } else {
             let ratio = Ratio::new(delta_x, delta_y);
             let (reduced_x, reduced_y) = (*ratio.numer(), *ratio.denom());
             let (x_step, y_step) = (reduced_x.abs(), reduced_y.abs());
-            
+
             match (delta_x >= 0, delta_y >= 0) {
                 (true, true) => (x_step, y_step),
                 (true, false) => (x_step, -y_step),
                 (false, true) => (-x_step, y_step),
-                (false, false) => (-x_step, -y_step)
+                (false, false) => (-x_step, -y_step),
             }
         }
     }
@@ -83,7 +83,7 @@ impl VentLine {
     fn points(&self) -> Vec<Coordinate> {
         let (step_x, step_y) = self.step();
         let (delta_x, delta_y) = self.delta();
-        
+
         let steps = if step_x != 0 {
             (delta_x / step_x).abs()
         } else if step_y != 0 {
@@ -92,10 +92,12 @@ impl VentLine {
             0
         };
 
-        (0..=steps).map(|step| Coordinate {
-            x: (self.0.x.clone() as i64 + (step * step_x)) as u32,
-            y: (self.0.y.clone() as i64 + (step * step_y)) as u32
-        }).collect()
+        (0..=steps)
+            .map(|step| Coordinate {
+                x: (self.0.x.clone() as i64 + (step * step_x)) as u32,
+                y: (self.0.y.clone() as i64 + (step * step_y)) as u32,
+            })
+            .collect()
     }
 }
 
