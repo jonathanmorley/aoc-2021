@@ -1,6 +1,6 @@
 use anyhow::Result;
 use aoc_runner_derive::{aoc, aoc_generator};
-use nalgebra::{SMatrix, SVector, ArrayStorage};
+use nalgebra::{ArrayStorage, SMatrix, SVector};
 
 #[aoc_generator(day6)]
 fn generator(input: &str) -> [u64; 9] {
@@ -8,7 +8,7 @@ fn generator(input: &str) -> [u64; 9] {
         .split(",")
         .map(str::parse)
         .map(Result::unwrap)
-        .fold([0; 9], |mut acc, fish: usize, | {
+        .fold([0; 9], |mut acc, fish: usize| {
             acc[fish] += 1;
             acc
         })
@@ -35,19 +35,17 @@ fn part2(input: &[u64; 9]) -> u64 {
     lanternfish(Vec::from_iter(input.to_owned()), 256)
 }
 
-const LANTERNFISH_MATRIX: SMatrix<u64, 9, 9> = SMatrix::from_array_storage(
-    ArrayStorage([
-        [0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0]
-    ])
-);
+const LANTERNFISH_MATRIX: SMatrix<u64, 9, 9> = SMatrix::from_array_storage(ArrayStorage([
+    [0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0],
+]));
 
 #[aoc(day6, part2, matrix)]
 fn part2_matrix(input: &[u64; 9]) -> u64 {

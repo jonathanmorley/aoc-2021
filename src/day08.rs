@@ -1,14 +1,25 @@
-use std::{collections::{HashSet, BTreeSet}, str::FromStr};
 use std::hash::{Hash, Hasher};
+use std::{
+    collections::{BTreeSet, HashSet},
+    str::FromStr,
+};
 
 use anyhow::{anyhow, Result};
 use aoc_runner_derive::{aoc, aoc_generator};
 use bimap::BiHashMap;
-use strum::{EnumString, AsRefStr};
+use strum::{AsRefStr, EnumString};
 
 #[derive(Clone, Debug, PartialEq, EnumString, AsRefStr, Eq, Hash, PartialOrd, Ord)]
 #[strum(serialize_all = "lowercase")]
-enum Signal { A, B, C, D, E, F, G }
+enum Signal {
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct SignalDigit(BTreeSet<Signal>);
@@ -25,8 +36,7 @@ impl FromStr for SignalDigit {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        s
-            .chars()
+        s.chars()
             .map(|c| c.to_string().parse())
             .collect::<Result<_, _>>()
             .map(SignalDigit)
@@ -38,7 +48,7 @@ impl SignalDigit {
     fn as_naive_u8(&self) -> Result<u8> {
         match self.as_u8s()?[..] {
             [x] => Ok(x),
-            ref x => Err(anyhow!("Could be one of {:?}", x))
+            ref x => Err(anyhow!("Could be one of {:?}", x)),
         }
     }
 
@@ -50,7 +60,7 @@ impl SignalDigit {
             5 => Ok(vec![2, 3, 5]),
             6 => Ok(vec![0, 6, 9]),
             7 => Ok(vec![8]),
-            a => Err(anyhow!("Not a valid digit with size: {}", a))
+            a => Err(anyhow!("Not a valid digit with size: {}", a)),
         }
     }
 }
@@ -59,23 +69,25 @@ impl SignalDigit {
 struct DisplayReading {
     patterns: HashSet<SignalDigit>,
     outputs: Vec<SignalDigit>,
-    digit_map: BiHashMap<SignalDigit, u8>
+    digit_map: BiHashMap<SignalDigit, u8>,
 }
 
 impl DisplayReading {
     fn add_three(&mut self) {
         let one = self.digit_map.get_by_right(&1).unwrap();
-        let three = self.patterns
-                .iter()
-                .filter(|x| x.as_u8s().unwrap().contains(&3))
-                .find(|x| x.0.is_superset(&one.0))
-                .unwrap();
+        let three = self
+            .patterns
+            .iter()
+            .filter(|x| x.as_u8s().unwrap().contains(&3))
+            .find(|x| x.0.is_superset(&one.0))
+            .unwrap();
         self.digit_map.insert(three.to_owned(), 3);
     }
 
     fn add_nine(&mut self) {
         let four = self.digit_map.get_by_right(&4).unwrap();
-        let nine = self.patterns
+        let nine = self
+            .patterns
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&9))
             .find(|x| x.0.is_superset(&four.0))
@@ -87,12 +99,13 @@ impl DisplayReading {
         let seven = self.digit_map.get_by_right(&7).unwrap();
         let nine = self.digit_map.get_by_right(&9).unwrap();
 
-        let zero = self.patterns
-                .iter()
-                .filter(|x| x.as_u8s().unwrap().contains(&0))
-                .filter(|x| *x != nine)
-                .find(|x| x.0.is_superset(&seven.0))
-                .unwrap();
+        let zero = self
+            .patterns
+            .iter()
+            .filter(|x| x.as_u8s().unwrap().contains(&0))
+            .filter(|x| *x != nine)
+            .find(|x| x.0.is_superset(&seven.0))
+            .unwrap();
         self.digit_map.insert(zero.to_owned(), 0);
     }
 
@@ -100,7 +113,8 @@ impl DisplayReading {
         let zero = self.digit_map.get_by_right(&0).unwrap();
         let nine = self.digit_map.get_by_right(&9).unwrap();
 
-        let six = self.patterns
+        let six = self
+            .patterns
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&6))
             .filter(|x| *x != zero)
@@ -114,7 +128,8 @@ impl DisplayReading {
     fn add_five(&mut self) {
         let six = self.digit_map.get_by_right(&6).unwrap();
 
-        let five = self.patterns
+        let five = self
+            .patterns
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&5))
             .filter(|x| x.0.is_subset(&six.0))
@@ -128,7 +143,8 @@ impl DisplayReading {
         let five = self.digit_map.get_by_right(&5).unwrap();
         let three = self.digit_map.get_by_right(&3).unwrap();
 
-        let two = self.patterns
+        let two = self
+            .patterns
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&5))
             .filter(|x| *x != five)
@@ -155,12 +171,11 @@ impl DisplayReading {
     }
 
     fn reading(&self) -> u32 {
-        self
-            .outputs
+        self.outputs
             .iter()
             .rev()
             .enumerate()
-            .map(|(i, digit), | {
+            .map(|(i, digit)| {
                 (*self.digit_map.get_by_left(digit).unwrap() as u32) * 10u32.pow(i as u32)
             })
             .sum()
@@ -172,12 +187,16 @@ fn generator(input: &str) -> Vec<DisplayReading> {
     input
         .lines()
         .map(|line| line.split_once(" | ").unwrap())
-        .map(|(patterns, outputs)| {
-            DisplayReading {
-                patterns: patterns.split_whitespace().map(|s| s.parse().unwrap()).collect(),
-                outputs: outputs.split_whitespace().map(|s| s.parse().unwrap()).collect(),
-                digit_map: BiHashMap::new()
-            }
+        .map(|(patterns, outputs)| DisplayReading {
+            patterns: patterns
+                .split_whitespace()
+                .map(|s| s.parse().unwrap())
+                .collect(),
+            outputs: outputs
+                .split_whitespace()
+                .map(|s| s.parse().unwrap())
+                .collect(),
+            digit_map: BiHashMap::new(),
         })
         .collect()
 }
@@ -187,7 +206,10 @@ fn part1(input: &[DisplayReading]) -> usize {
     input
         .iter()
         .map(|line| {
-            line.outputs.iter().filter_map(|output| output.as_naive_u8().ok()).count()
+            line.outputs
+                .iter()
+                .filter_map(|output| output.as_naive_u8().ok())
+                .count()
         })
         .sum()
 }
@@ -195,7 +217,7 @@ fn part1(input: &[DisplayReading]) -> usize {
 #[aoc(day8, part2)]
 fn part2(input: &[DisplayReading]) -> u32 {
     let mut readings = input.to_owned();
-    
+
     for reading in readings.iter_mut() {
         reading.update_digit_map();
     }
@@ -207,10 +229,11 @@ fn part2(input: &[DisplayReading]) -> u32 {
 mod tests {
     use super::*;
 
-    const SAMPLE_1: &str = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf";
+    const SAMPLE_1: &str =
+        "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf";
 
-    const SAMPLE_2: &str = 
-"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
+    const SAMPLE_2: &str =
+        "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
 fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb
