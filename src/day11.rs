@@ -36,7 +36,7 @@ impl OctopusGrid {
     fn increment(&mut self) {
         for line in self.0.iter_mut() {
             for energy in line {
-                *energy = *energy + 1;
+                *energy += 1;
             }
         }
     }
@@ -112,7 +112,7 @@ impl OctopusGrid {
             },
         ]
         .into_iter()
-        .filter_map(|x| x)
+        .flatten()
         .collect()
     }
 

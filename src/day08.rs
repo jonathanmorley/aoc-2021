@@ -118,8 +118,7 @@ impl DisplayReading {
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&6))
             .filter(|x| *x != zero)
-            .filter(|x| *x != nine)
-            .next()
+            .find(|x| *x != nine)
             .unwrap();
 
         self.digit_map.insert(six.to_owned(), 6);
@@ -132,8 +131,7 @@ impl DisplayReading {
             .patterns
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&5))
-            .filter(|x| x.0.is_subset(&six.0))
-            .next()
+            .find(|x| x.0.is_subset(&six.0))
             .unwrap();
 
         self.digit_map.insert(five.to_owned(), 5);
@@ -148,8 +146,7 @@ impl DisplayReading {
             .iter()
             .filter(|x| x.as_u8s().unwrap().contains(&5))
             .filter(|x| *x != five)
-            .filter(|x| *x != three)
-            .next()
+            .find(|x| *x != three)
             .unwrap();
 
         self.digit_map.insert(two.to_owned(), 2);

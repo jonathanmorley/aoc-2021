@@ -94,8 +94,8 @@ impl VentLine {
 
         (0..=steps)
             .map(|step| Coordinate {
-                x: (self.0.x.clone() as i64 + (step * step_x)) as u32,
-                y: (self.0.y.clone() as i64 + (step * step_y)) as u32,
+                x: (self.0.x as i64 + (step * step_x)) as u32,
+                y: (self.0.y as i64 + (step * step_y)) as u32,
             })
             .collect()
     }
@@ -114,7 +114,7 @@ fn generator(input: &str) -> Vec<VentLine> {
 #[aoc(day5, part1)]
 fn part1(input: &[VentLine]) -> usize {
     let vent_lines: Vec<&VentLine> = input
-        .into_iter()
+        .iter()
         .filter(|line| line.is_horizontal() || line.is_vertical())
         .collect();
 

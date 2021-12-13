@@ -11,7 +11,7 @@ pub fn generator(input: &str) -> Result<Vec<u32>, ParseIntError> {
 
 #[aoc(day1, part1)]
 pub fn part1(input: &[u32]) -> usize {
-    let offset = iter::once(None).chain(input.clone().into_iter().map(Some));
+    let offset = iter::once(None).chain(input.iter().map(Some));
 
     // Creates an iterator of (Option<u8>, u8),
     // representing the previous value, and the current value.
@@ -25,21 +25,13 @@ pub fn part1(input: &[u32]) -> usize {
 
 #[aoc(day1, part2)]
 pub fn part2(input: &[u32]) -> usize {
-    let offset_1 = iter::once(None).chain(input.clone().into_iter().map(Some));
+    let offset_1 = iter::once(None).chain(input.iter().map(Some));
     let offset_2 = iter::once(None)
         .chain(iter::once(None))
-        .chain(input.clone().into_iter().map(Some));
+        .chain(input.iter().map(Some));
 
     let windows = izip!(offset_2, offset_1, input).filter_map(|(a, b, c)| {
-        if let Some(a) = a {
-            if let Some(b) = b {
-                Some(a + b + c)
-            } else {
-                None
-            }
-        } else {
-            None
-        }
+        a.map(|a| b.map(|b| a + b + c))
     });
 
     let offset_windows = iter::once(None).chain(windows.clone().map(Some));

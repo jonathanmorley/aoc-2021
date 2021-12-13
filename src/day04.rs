@@ -69,7 +69,7 @@ fn generator(input: &str) -> (Vec<u32>, Vec<Board>) {
     let numbers = blocks
         .next()
         .unwrap()
-        .split(",")
+        .split(',')
         .map(str::parse)
         .collect::<Result<_, _>>()
         .unwrap();
@@ -97,7 +97,7 @@ fn generator(input: &str) -> (Vec<u32>, Vec<Board>) {
 fn part1(input: &(Vec<u32>, Vec<Board>)) -> u32 {
     let (numbers, boards) = input;
     let mut marked_boards: Vec<MarkedBoard> = boards
-        .into_iter()
+        .iter()
         .map(ToOwned::to_owned)
         .map(Into::into)
         .collect();
@@ -120,7 +120,7 @@ fn part1(input: &(Vec<u32>, Vec<Board>)) -> u32 {
 fn part2(input: &(Vec<u32>, Vec<Board>)) -> u32 {
     let (numbers, boards) = input;
     let mut marked_boards: Vec<MarkedBoard> = boards
-        .into_iter()
+        .iter()
         .map(ToOwned::to_owned)
         .map(Into::into)
         .collect();

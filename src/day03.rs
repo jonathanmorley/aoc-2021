@@ -71,7 +71,7 @@ fn filter_readings(readings: Vec<String>, index: usize, filter_bit: char) -> Vec
 }
 
 fn oxygen_generator(readings: Vec<String>) -> Result<u32> {
-    let mut candidates = readings.clone();
+    let mut candidates = readings;
 
     for i in 0.. {
         let mcb = most_common_bit(&candidates, i);
@@ -87,7 +87,7 @@ fn oxygen_generator(readings: Vec<String>) -> Result<u32> {
 }
 
 fn co2_scrubber(readings: Vec<String>) -> Result<u32> {
-    let mut candidates = readings.clone();
+    let mut candidates = readings;
 
     for i in 0.. {
         let lcb = least_common_bit(&candidates, i);

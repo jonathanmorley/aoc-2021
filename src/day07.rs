@@ -4,7 +4,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 #[aoc_generator(day7)]
 fn generator(input: &str) -> Result<Vec<u32>> {
     input
-        .split(",")
+        .split(',')
         .map(str::parse)
         .collect::<Result<_, _>>()
         .map_err(Into::into)

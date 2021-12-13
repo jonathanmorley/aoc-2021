@@ -32,9 +32,9 @@ impl Cave<'_> {
     }
 }
 
-impl<'a> Into<Cave<'a>> for &'a str {
-    fn into(self) -> Cave<'a> {
-        match self {
+impl<'a> From<&'a str> for Cave<'a> {
+    fn from(s: &'a str) -> Self {
+        match s {
             "start" => Cave::Start,
             "end" => Cave::End,
             n if n == n.to_lowercase() => Cave::Small(n),
@@ -78,16 +78,14 @@ fn paths_with_single_revisit<'a>(
 
             if neighbour == to {
                 [path].into()
+            } else if initial.contains(&neighbour) && !neighbour.is_revisitable() {
+                // revisit of start or end
+                [].into()
+            } else if initial.contains(&neighbour) && neighbour.is_small() {
+                // revisit of a small cave
+                paths(graph, path, to)
             } else {
-                if initial.contains(&neighbour) && !neighbour.is_revisitable() {
-                    // revisit of start or end
-                    [].into()
-                } else if initial.contains(&neighbour) && neighbour.is_small() {
-                    // revisit of a small cave
-                    paths(graph, path, to)
-                } else {
-                    paths_with_single_revisit(graph, path, to)
-                }
+                paths_with_single_revisit(graph, path, to)
             }
         })
         .collect()

@@ -53,7 +53,7 @@ impl fmt::Display for Paper {
                     write!(f, ".")?;
                 }
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
 
         Ok(())

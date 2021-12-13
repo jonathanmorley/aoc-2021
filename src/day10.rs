@@ -18,14 +18,14 @@ enum ParseError {
 impl ParseError {
     fn score(&self) -> u64 {
         match self {
-            &ParseError::Corrupted { found, .. } => match found {
+            ParseError::Corrupted { found, .. } => match found {
                 ')' => 3,
                 ']' => 57,
                 '}' => 1197,
                 '>' => 25137,
                 _ => unreachable!(),
             },
-            &ParseError::Incomplete { ref expected } => expected.chars().fold(0, |score, c| {
+            ParseError::Incomplete { ref expected } => expected.chars().fold(0, |score, c| {
                 score * 5
                     + match c {
                         ')' => 1,
@@ -92,7 +92,7 @@ fn parse_brackets(s: &str) -> Result<(), ParseError> {
 fn part1(input: &[String]) -> u64 {
     input
         .iter()
-        .map(|line| parse_brackets(&line))
+        .map(|line| parse_brackets(line))
         .filter_map(|result| {
             if let Err(e @ ParseError::Corrupted { .. }) = result {
                 Some(e.score())
@@ -107,7 +107,7 @@ fn part1(input: &[String]) -> u64 {
 fn part2(input: &[String]) -> u64 {
     let mut scores: Vec<_> = input
         .iter()
-        .map(|line| parse_brackets(&line))
+        .map(|line| parse_brackets(line))
         .filter_map(|result| {
             if let Err(e @ ParseError::Incomplete { .. }) = result {
                 Some(e.score())

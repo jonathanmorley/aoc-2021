@@ -5,7 +5,7 @@ use nalgebra::{ArrayStorage, SMatrix, SVector};
 #[aoc_generator(day6)]
 fn generator(input: &str) -> [u64; 9] {
     input
-        .split(",")
+        .split(',')
         .map(str::parse)
         .map(Result::unwrap)
         .fold([0; 9], |mut acc, fish: usize| {
