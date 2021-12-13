@@ -80,7 +80,7 @@ impl Paper {
     }
 
     fn fold(&mut self, fold: &Fold) {
-        *self = Paper(self.0.iter().filter_map(|dot| dot.fold(fold)).collect())
+        self.0 = self.0.iter().filter_map(|dot| dot.fold(fold)).collect();
     }
 }
 
